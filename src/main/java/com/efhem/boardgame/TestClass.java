@@ -15,10 +15,37 @@ import java.util.Set;
 public class TestClass {
  
     public static void main(String[] args) {
-        Set<Color> colors = new HashSet<Color>();
-        colors.add(Color.RED);
-        colors.add(Color.RED);
-        colors.add(Color.RED);
-        System.out.println("count: "+ colors.size());
+        char[][] table = new char[8][8];
+        // Initialize table with some characters
+
+        // Search diagonally from top-left to bottom-right
+        System.out.println("Diagonal search from top-left to bottom-right:");
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                int row = i;
+                int col = j;
+                while (row < 8 && col < 8) {
+                    System.out.print(table[row][col] + " ");
+                    row++;
+                    col++;
+                }
+                System.out.println();
+            }
+        }
+
+        // Search diagonally from top-right to bottom-left
+        System.out.println("\nDiagonal search from top-right to bottom-left:");
+        for (int i = 0; i < 8; i++) {
+            for (int j = 7; j >= 0; j--) {
+                int row = i;
+                int col = j;
+                while (row < 8 && col >= 0) {
+                    System.out.print(table[row][col] + " ");
+                    row++;
+                    col--;
+                }
+                System.out.println();
+            }
+        }
     }
 }

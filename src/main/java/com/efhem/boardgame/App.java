@@ -1,12 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.efhem.boardgame;
 
+import java.awt.Color;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -16,6 +14,8 @@ public class App extends javax.swing.JFrame {
 
     private final BoardGame boardGame;
     JButton[][] gameButtons = new JButton[8][8];
+
+    static final int ROWCOL = 8;
 
     /**
      * Creates new form App
@@ -102,11 +102,12 @@ public class App extends javax.swing.JFrame {
         setEnableBoardButton(false);
         setEnableStartButton();
     }
-    
+
     private void setEnableBoardButton(boolean enable) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 JButton button = gameButtons[i][j];
+                button.setText(null);
                 button.setEnabled(enable);
                 if (!enable) {
                     button.setBackground(null);
@@ -551,8 +552,6 @@ public class App extends javax.swing.JFrame {
         });
     }
 
-    
-
     private void boardButtonActionPerformed(java.awt.event.ActionEvent evt) {
         JButton thisOne = (JButton) evt.getSource();
         removeActionListener(thisOne);
@@ -565,6 +564,8 @@ public class App extends javax.swing.JFrame {
 
         boardGame.setNextPlayerTurn();
         setPlayerTurnIndicator(true);
+
+        checkForWin(player);
     }
 
     private void setPlayerTurnIndicator(boolean playing) {
@@ -620,6 +621,98 @@ public class App extends javax.swing.JFrame {
     String getSelectedItem(java.awt.event.ActionEvent evt) {
         JComboBox comboBox = (JComboBox) evt.getSource();
         return String.valueOf(comboBox.getSelectedItem());
+    }
+
+    private void checkForWin(Player player) {
+        String board = "";
+
+        for (int row = 0; row < ROWCOL; row++) {
+            for (int col = 0; col < ROWCOL; col++) {
+                board += colorToChar(gameButtons[row][col].getBackground());
+            }
+            board += ".";
+        }
+
+        for (int col = 0; col < ROWCOL; col++) {
+            for (int row = 0; row < ROWCOL; row++) {
+                board += colorToChar(gameButtons[row][col].getBackground());
+            }
+            board += ".";
+        }
+
+        // Search diagonally from top-left to bottom-right
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                int row = i;
+                int col = j;
+                while (row < 8 && col < 8) {
+                    board += colorToChar(gameButtons[row][col].getBackground());
+                    row++;
+                    col++;
+                }
+                board += ".";
+
+            }
+        }
+
+        // Search diagonally from top-right to bottom-left
+        for (int i = 0; i < 8; i++) {
+            for (int j = 7; j >= 0; j--) {
+                int row = i;
+                int col = j;
+                while (row < 8 && col >= 0) {
+                    board += colorToChar(gameButtons[row][col].getBackground());
+                    row++;
+                    col--;
+                }
+                board += ".";
+            }
+        }
+
+        if (board.contains("RRRR")) {
+            JOptionPane.showMessageDialog(this, player.getName() + " have a winner");
+            startGame();
+        }
+
+        if (board.contains("GGGG")) {
+
+            JOptionPane.showMessageDialog(this, player.getName() + " have a winner");
+            startGame();
+        }
+
+        if (board.contains("BBBB")) {
+
+            JOptionPane.showMessageDialog(this, player.getName() + " have a winner");
+            startGame();
+        }
+
+        if (board.contains("LLLL")) {
+
+            JOptionPane.showMessageDialog(this, player.getName() + " have a winner");
+            startGame();
+        }
+
+//        if (board.length() == 160) {
+//            startGame();
+//        }
+          System.out.println("board size "+ board.length());
+
+    }
+
+    private String colorToChar(Color color) {
+        String col;
+        if (color == Color.RED) {
+            col = "R";
+        } else if (color == Color.GREEN) {
+            col = "G";
+        } else if (color == Color.BLUE) {
+            col = "B";
+        } else if (color == Color.BLACK) {
+            col = "L";
+        } else {
+            col = "";
+        }
+        return col;
     }
 
     //Start game locks the choice components(JComboBox) until game is cancelled

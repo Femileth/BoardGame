@@ -103,14 +103,8 @@ public class BoardGame {
         };
     }
 
-    public void resetBoard() {
-//        player1 = null;
-//        player2 = null;
-//        player3 = null;
+    public void findPlayerName() {        
         
-        startedGame = false;
-        playersReady = false;
-        playerTurn = player1;
     }
 
 }
