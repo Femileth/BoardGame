@@ -26,6 +26,10 @@ public class App extends javax.swing.JFrame {
         initGameButton();
     }
 
+    /**
+     * Initialize the game buttons to a two-dimensional array. Disables the
+     * start buttons and game button
+     */
     private void initGameButton() {
         gameButtons[0][0] = jButton1;
         gameButtons[0][1] = jButton2;
@@ -103,6 +107,11 @@ public class App extends javax.swing.JFrame {
         setEnableStartButton();
     }
 
+    /**
+     * Helper method that disable or enable the game buttons
+     *
+     * @param enable
+     */
     private void setEnableBoardButton(boolean enable) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -116,6 +125,10 @@ public class App extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Helper method that set onClick actions on game buttons
+     *
+     */
     private void boardButtonaddActionListener() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -127,6 +140,10 @@ public class App extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Helper method that remove on click actions listener on game buttons
+     *
+     */
     private void boardButtonremoveAllActionListener() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -552,27 +569,35 @@ public class App extends javax.swing.JFrame {
         });
     }
 
+    /**
+     * Handles the action performed by the board button. Sets the background
+     * color of the button to the current player's color. Updates the player
+     * turn indicator. Checks for a win condition after the player's move.
+     */
     private void boardButtonActionPerformed(java.awt.event.ActionEvent evt) {
         JButton thisOne = (JButton) evt.getSource();
         removeActionListener(thisOne);
         Player player = boardGame.getPlayerTurn();
 
-        System.out.println("Setting button color");
-        System.out.println(player);
-
         thisOne.setBackground(player.getColor());
 
         boardGame.setNextPlayerTurn();
+        boardGame.updateMoves();
         setPlayerTurnIndicator(true);
 
         checkForWin(player);
     }
 
+    /**
+     * Sets the player turn indicator based on the current player's turn. Clears
+     * the turn indicator if the game is not being played. Updates the GUI to
+     * display the current player's turn.
+     *
+     * @param playing Indicates if the game is currently being played.
+     */
     private void setPlayerTurnIndicator(boolean playing) {
         if (playing) {
             Player player = boardGame.getPlayerTurn();
-            System.out.println("Setting indicator");
-            System.out.println(player);
             switch (player.getNumber()) {
                 case 1 -> {
                     jLabel1.setOpaque(true);
@@ -594,8 +619,6 @@ public class App extends javax.swing.JFrame {
                 }
             }
         } else {
-            System.out.println("clear all indicator");
-            jLabel1.setOpaque(false);
             jLabel2.setOpaque(false);
             jLabel3.setOpaque(false);
             jLabel1.setBackground(null);
@@ -692,10 +715,10 @@ public class App extends javax.swing.JFrame {
             startGame();
         }
 
-//        if (board.length() == 160) {
-//            startGame();
-//        }
-          System.out.println("board size "+ board.length());
+        if (boardGame.getMoves() >= 64) {
+            JOptionPane.showMessageDialog(this, "No winner");
+            startGame();
+        }
 
     }
 
@@ -710,13 +733,14 @@ public class App extends javax.swing.JFrame {
         } else if (color == Color.BLACK) {
             col = "L";
         } else {
-            col = "";
+            col = "-";
         }
         return col;
     }
 
     //Start game locks the choice components(JComboBox) until game is cancelled
     void startGame() {
+        boardGame.resetMoves();
         if (!boardGame.isCurrentlyPlaying()) {
             //playing
             setEnableBoardButton(true);
